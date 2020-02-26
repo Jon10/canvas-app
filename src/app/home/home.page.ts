@@ -56,33 +56,32 @@ export class HomePage implements AfterViewInit {
       this.canvasElement.height = background.height;
 
       ctx.drawImage(background,0,0, this.canvasElement.width, this.canvasElement.height);
-      // EE6352
-      // FAC05E
-      this.drawRectangle(732, 342, 68, 39, '#EE6352');
-      this.drawRectangle(732, 422, 68, 39, '#EE6352');
-      this.drawRectangle(730, 517, 68, 39, '#EE6352');
-      this.drawRectangle(812, 336, 136, 49, '#FAC05E');
-      this.drawRectangle(814, 421, 139, 52, '#FAC05E');
-      this.drawRectangle(815, 518, 142, 54, '#FAC05E');
+      this.drawRectangle(732, 342, 68, 39, this.lineWidth, '#EE6352', -5);
+      this.drawRectangle(732, 422, 68, 39, this.lineWidth, '#EE6352');
+      this.drawRectangle(730, 517, 68, 39, this.lineWidth, '#EE6352');
+      this.drawRectangle(812, 336, 136, 49, this.lineWidth, '#FAC05E');
+      this.drawRectangle(814, 421, 139, 52, this.lineWidth, '#FAC05E');
+      this.drawRectangle(815, 518, 142, 54, this.lineWidth, '#FAC05E');
     }
   }
 
-  drawRectangle(x, y, width, height, color) {
+  drawRectangle(x, y, width, height, lineWidth, color, degrees: number=0) {
     let ctx = this.canvasElement.getContext('2d');
     
     ctx.lineJoin = 'round';
     ctx.strokeStyle = color;
-    ctx.lineWidth = this.lineWidth;
+    ctx.lineWidth = lineWidth;
+    
+    // save the untranslated/unrotated context first
+    ctx.save();
 
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + width, y);
-    ctx.lineTo(x + width, y + height);
-    ctx.lineTo(x, y + height);
-    ctx.lineTo(x, y);
-    ctx.closePath();
-
-    ctx.stroke();
+    ctx.translate(x + width / 2, y + height / 2);
+    ctx.rotate(degrees * Math.PI / 180);
+    ctx.strokeRect(-width / 2, -height / 2, width, height);
+    
+    // restore the context to its untranslated/unrotated state
+    ctx.restore();
   }
 
   moved(ev) {
